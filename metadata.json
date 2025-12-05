@@ -1,0 +1,5 @@
+{
+  "name": "Immigration Impact Simulation",
+  "description": "A visual simulation of population dynamics, immigration policies, and demographic shifts using Three.js.",
+  "requestFramePermissions": []
+}
