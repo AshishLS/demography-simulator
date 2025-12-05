@@ -22,8 +22,8 @@ export interface Agent {
 
 export interface SimulationParams {
   timeSpeed: number; // Simulated years per real second
-  legalAcceptanceRate: number; // 0-100%
-  illegalSuccessRate: number; // 0-100%
+  legalPer1000: number; // Immigrants per 1000 natives per year
+  illegalPer1000: number; // Immigrants per 1000 natives per year
   tfrNative: number; // Total Fertility Rate (Births per couple per lifespan)
   tfrLegal: number; // Total Fertility Rate
   tfrIllegal: number; // Total Fertility Rate

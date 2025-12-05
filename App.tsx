@@ -38,7 +38,11 @@ const App: React.FC = () => {
      const saved = localStorage.getItem('sim_history');
      if (saved) {
         try {
-           setHistory(JSON.parse(saved));
+           const parsed = JSON.parse(saved);
+           // Simple migration check: if old keys exist, we might want to map them or just use defaults for params
+           // For simplicity in this demo, if structure doesn't match perfectly, we keep stats but might lose precise param recall
+           // or we can map them.
+           setHistory(parsed);
         } catch (e) {
            console.error("Failed to parse history", e);
         }
@@ -100,6 +104,7 @@ const App: React.FC = () => {
         onTogglePlay={togglePlay}
         onStop={stopSimulation}
         params={params}
+        stats={stats}
         onParamChange={handleParamChange}
         onShowHistory={() => setShowHistory(true)}
       />

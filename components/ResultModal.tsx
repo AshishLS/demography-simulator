@@ -84,6 +84,17 @@ export const ResultModal: React.FC<ResultModalProps> = ({ isOpen, onClose, stats
                   <div className="bg-red-400 h-full" style={{width: `${stats.percentIllegal}%`}}></div>
                 </div>
              </div>
+             
+             {/* Parameters Used */}
+             <h3 className="text-lg font-semibold text-white pt-2">Policy Settings</h3>
+             <div className="grid grid-cols-2 gap-2 text-xs bg-gray-900 p-3 rounded">
+                <span className="text-gray-400">Legal (per 1k):</span>
+                <span className="text-white font-mono text-right">{params.legalPer1000}</span>
+                <span className="text-gray-400">Illegal (per 1k):</span>
+                <span className="text-white font-mono text-right">{params.illegalPer1000}</span>
+                <span className="text-gray-400">TFR Native:</span>
+                <span className="text-white font-mono text-right">{params.tfrNative}</span>
+             </div>
           </div>
         </div>
 

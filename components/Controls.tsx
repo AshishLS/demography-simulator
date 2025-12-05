@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SimulationParams } from '../types';
+import { SimulationParams, SimulationStats } from '../types';
 import { Play, Pause, Square, ChevronUp, ChevronDown, BarChart2 } from 'lucide-react';
 
 interface ControlsProps {
@@ -7,6 +7,7 @@ interface ControlsProps {
   onTogglePlay: () => void;
   onStop: () => void;
   params: SimulationParams;
+  stats: SimulationStats;
   onParamChange: (key: keyof SimulationParams, value: number) => void;
   onShowHistory: () => void;
 }
@@ -15,18 +16,20 @@ export const Controls: React.FC<ControlsProps> = ({
   isRunning, 
   onTogglePlay, 
   onStop, 
-  params, 
+  params,
+  stats,
   onParamChange,
   onShowHistory
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Calculate estimated annual immigrants
-  const legalProb = params.legalAcceptanceRate / 100;
-  const illegalProb = params.illegalSuccessRate / 100;
-  // Prob of entering = Legal + (1-Legal)*Illegal
-  const totalProb = legalProb + (1 - legalProb) * illegalProb;
-  const estimatedAnnualImmigrants = Math.round(params.initialOutsiders * totalProb);
+  // Calculate estimated annual immigrants based on current Native population
+  // If simulation hasn't started (0 natives), use initial params
+  const basePop = stats.totalInside > 0 ? stats.countNative : params.initialNatives;
+  
+  const estLegal = (basePop / 1000) * params.legalPer1000;
+  const estIllegal = (basePop / 1000) * params.illegalPer1000;
+  const estimatedAnnualImmigrants = (estLegal + estIllegal).toFixed(1);
 
   return (
     <div className="absolute top-4 left-4 w-80 flex flex-col gap-2 max-h-[90vh] transition-all">
@@ -90,7 +93,7 @@ export const Controls: React.FC<ControlsProps> = ({
           {/* Immigration Policy */}
           <h3 className="font-semibold text-blue-400">Immigration Policy</h3>
           <p className="text-[10px] text-gray-500 leading-tight">
-            Probability that an outsider successfully moves in per year.
+            Target immigrants per 1,000 native population per year.
           </p>
           
           <div className="bg-gray-800 p-2 rounded border border-gray-700 mb-2">
@@ -99,30 +102,30 @@ export const Controls: React.FC<ControlsProps> = ({
                <span className="text-white font-mono font-bold">{estimatedAnnualImmigrants}</span>
             </div>
             <div className="text-[9px] text-gray-500 text-right mt-0.5">
-               (Based on {params.initialOutsiders} outsiders)
+               (Based on current native pop: {basePop})
             </div>
           </div>
 
           <div className="space-y-3">
             <div className="space-y-1">
               <label className="flex justify-between text-xs">
-                Legal Annual Chance <span className="text-green-400">{params.legalAcceptanceRate}%</span>
+                Legal (per 1k Natives) <span className="text-green-400">{params.legalPer1000}</span>
               </label>
               <input 
                 type="range" min="0" max="100" step="1"
-                value={params.legalAcceptanceRate}
-                onChange={(e) => onParamChange('legalAcceptanceRate', parseInt(e.target.value))}
+                value={params.legalPer1000}
+                onChange={(e) => onParamChange('legalPer1000', parseInt(e.target.value))}
                 className="w-full accent-green-500 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"
               />
             </div>
             <div className="space-y-1">
               <label className="flex justify-between text-xs">
-                Illegal Annual Chance <span className="text-red-400">{params.illegalSuccessRate}%</span>
+                Illegal (per 1k Natives) <span className="text-red-400">{params.illegalPer1000}</span>
               </label>
               <input 
-                type="range" min="0" max="100" step="1"
-                value={params.illegalSuccessRate}
-                onChange={(e) => onParamChange('illegalSuccessRate', parseInt(e.target.value))}
+                type="range" min="0" max="50" step="1"
+                value={params.illegalPer1000}
+                onChange={(e) => onParamChange('illegalPer1000', parseInt(e.target.value))}
                 className="w-full accent-red-500 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"
               />
             </div>

@@ -163,18 +163,35 @@ export const SimulationWorld: React.FC<SimulationWorldProps> = ({ isRunning, par
     const newAgents: Agent[] = [];
 
     // TFR Calculation: Probability of birth per year
-    // TFR is children per couple over ~30 reproductive years.
-    // P(Birth per person per year) = TFR / 2 / 30
     const REPRODUCTIVE_YEARS = 30;
     const pBirthNative = (params.tfrNative / 2 / REPRODUCTIVE_YEARS) * yearsPassedThisFrame;
     const pBirthLegal = (params.tfrLegal / 2 / REPRODUCTIVE_YEARS) * yearsPassedThisFrame;
     const pBirthIllegal = (params.tfrIllegal / 2 / REPRODUCTIVE_YEARS) * yearsPassedThisFrame;
 
     // Immigration Probability Logic
-    // Sliders represent "Annual Probability of Entry" per outsider.
-    // We scale this to the current frame's time step.
-    const pLegalEntry = (params.legalAcceptanceRate / 100) * yearsPassedThisFrame;
-    const pIllegalEntry = (params.illegalSuccessRate / 100) * yearsPassedThisFrame;
+    // Logic: Calculate total target immigrants for this year based on native pop.
+    // Then divide by current outsider count to get "Probability per Outsider".
+    
+    // Count active natives for calculation
+    let nativeCount = 0;
+    let outsiderCount = 0;
+    agents.forEach(a => {
+        if (!a.dying) {
+            if (a.group === GroupType.NATIVE) nativeCount++;
+            if (a.group === GroupType.OUTSIDER) outsiderCount++;
+        }
+    });
+
+    const targetLegalAnnual = (nativeCount / 1000) * params.legalPer1000;
+    const targetIllegalAnnual = (nativeCount / 1000) * params.illegalPer1000;
+
+    // Probability per outsider per year = Target / Outsiders
+    const probLegalPerYear = outsiderCount > 0 ? targetLegalAnnual / outsiderCount : 0;
+    const probIllegalPerYear = outsiderCount > 0 ? targetIllegalAnnual / outsiderCount : 0;
+
+    // Probability for this specific frame
+    const pLegalEntry = probLegalPerYear * yearsPassedThisFrame;
+    const pIllegalEntry = probIllegalPerYear * yearsPassedThisFrame;
     
     const animationSpeed = 2.0 * delta; // Animation speed relative to real time
 

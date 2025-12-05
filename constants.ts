@@ -24,15 +24,15 @@ export const COLORS = {
 };
 
 // Simulation Constants
-export const AGENT_SIZE = 0.12; // Reduced by factor 5 (was 0.6)
+export const AGENT_SIZE = 0.24; // Increased by factor 2 (was 0.12)
 export const MAX_POPULATION_CAP = 10000; // Increased to 10k
 export const MOVE_SPEED = 5;
 
 // Default Params
 export const DEFAULT_PARAMS = {
   timeSpeed: 1.0,
-  legalAcceptanceRate: 30,
-  illegalSuccessRate: 10,
+  legalPer1000: 5.0,   // 5 immigrants per 1000 natives
+  illegalPer1000: 1.0, // 1 immigrant per 1000 natives
   tfrNative: 1.5,   // Approx 1.5 children per couple
   tfrLegal: 2.1,    // Replacement rate
   tfrIllegal: 3.0,  // Higher rate

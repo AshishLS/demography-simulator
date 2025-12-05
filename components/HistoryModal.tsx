@@ -40,8 +40,8 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, his
       "Minority Year",
       "Init Natives",
       "Init Outsiders",
-      "Legal Rate %",
-      "Illegal Rate %",
+      "Legal (per 1k)",
+      "Illegal (per 1k)",
       "TFR Native",
       "TFR Legal",
       "TFR Illegal"
@@ -61,8 +61,9 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, his
       entry.stats.minorityYear !== null ? entry.stats.minorityYear : "",
       entry.params.initialNatives,
       entry.params.initialOutsiders,
-      entry.params.legalAcceptanceRate,
-      entry.params.illegalSuccessRate,
+      // Handle legacy data or new params
+      (entry.params as any).legalPer1000 ?? (entry.params as any).legalAcceptanceRate,
+      (entry.params as any).illegalPer1000 ?? (entry.params as any).illegalSuccessRate,
       entry.params.tfrNative,
       entry.params.tfrLegal,
       entry.params.tfrIllegal
@@ -161,7 +162,12 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, his
            <h3 className="text-lg font-semibold text-gray-200 mb-4">Detailed Logs</h3>
            <div className="space-y-3">
               {history.length === 0 && <p className="text-gray-500 italic">No runs saved yet.</p>}
-              {history.map((entry, idx) => (
+              {history.map((entry, idx) => {
+                 // Check for legacy params vs new params
+                 const legalVal = (entry.params as any).legalPer1000 ?? (entry.params as any).legalAcceptanceRate + '% (Old)';
+                 const illegalVal = (entry.params as any).illegalPer1000 ?? (entry.params as any).illegalSuccessRate + '% (Old)';
+                 
+                 return (
                  <div key={entry.id} className="bg-gray-900 border border-gray-700 p-4 rounded-lg">
                     <div className="flex justify-between items-start mb-2">
                       <div>
@@ -179,11 +185,11 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, his
                         <div className="text-gray-500">Init Natives</div>
                         <div className="text-gray-200 font-mono">{entry.params.initialNatives}</div>
 
-                        <div className="text-gray-500">Legal Rate</div>
-                        <div className="text-gray-200 font-mono">{entry.params.legalAcceptanceRate}%</div>
+                        <div className="text-gray-500">Legal (per 1k)</div>
+                        <div className="text-gray-200 font-mono">{legalVal}</div>
 
-                        <div className="text-gray-500">Illegal Rate</div>
-                        <div className="text-gray-200 font-mono">{entry.params.illegalSuccessRate}%</div>
+                        <div className="text-gray-500">Illegal (per 1k)</div>
+                        <div className="text-gray-200 font-mono">{illegalVal}</div>
 
                         <div className="text-gray-500">TFR Native</div>
                         <div className="text-yellow-400 font-mono">{entry.params.tfrNative.toFixed(2)}</div>
@@ -211,7 +217,8 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, his
                       </div>
                     )}
                  </div>
-              ))}
+              );
+              })}
            </div>
         </div>
       </div>
