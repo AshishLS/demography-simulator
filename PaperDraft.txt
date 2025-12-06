@@ -1,0 +1,157 @@
+Immigration Impact Simulation: An Agent-Based Model of Demography and Migration
+Abstract
+
+We present demography-simulator, an agent-based simulation model implemented in Three.js and JavaScript, to study how immigration (legal and illegal), birth rates, and mortality influence the demographic composition of a hypothetical country over time. Agents (“people”) live, reproduce, immigrate, or die according to configurable parameters. Through varying immigration acceptance rates, birth rates, and immigration success probabilities — and using simulation of time as “years” — the model enables exploration of long-term population dynamics under different policy scenarios. The simulator allows visualization of population groups (natives, legally immigrated, illegally immigrated) and provides exportable results for further analysis. This tool demonstrates how simple agent-level rules can yield emergent macro-level demographic patterns, making it useful for educational, exploratory, and research-oriented purposes.
+
+1. Introduction
+1.1 Background & Motivation
+
+Demographic change due to migration is a central concern for modern societies. Understanding how the interplay of immigration policies, natural birth rates, and mortality affects population composition is critical for policymakers, social scientists, and urban planners. Traditional demographic projection methods often rely on aggregate compartment or cohort- based models; while useful, these may obscure individual-level variation, randomness, and “emergent” population dynamics.
+
+Agent-based modelling (ABM) provides an alternative: by simulating many individual agents each following simple rules, one can observe how aggregate population trends emerge from micro-level interactions. ABMs have been used across ecology, economics, and social sciences for such tasks 
+SpringerLink
++1
+.
+
+1.2 Aim of This Work
+
+We aim to develop a simple but flexible agent-based demographic simulator to explore how different combinations of immigration acceptance (legal and illegal), birth rates, and mortality might shape long-term population composition. By enabling interactive parameter tuning and real-time visualization, we provide a tool for both pedagogical use and hypothesis exploration.
+
+1.3 Contributions
+
+Implementation of a configurable ABM of immigration, birth, and death using web technologies (Three.js + JavaScript).
+
+Separation of population into groups: natives, legal immigrants, illegal immigrants, outsiders.
+
+Time scaling to simulate decades/centuries in minutes.
+
+Exportable JSON output for downstream analysis.
+
+A reproducible platform for “what-if” scenario testing.
+
+2. Methods
+2.1 Simulation Methodology & Model Structure
+
+Following standard practices in simulation methodology, we first define the problem and system boundaries, specify performance metrics, build a conceptual model, and then implement the model in code 
+rossetti.github.io
++1
+.
+
+Our simulation uses the ABM paradigm: each agent represents an individual, with attributes such as age, group, and lifespan; behaviors include aging, birth, immigration attempt, and death. The environment is a 2D rectangular area representing “inside” and “outside” regions separated by a vertical border.
+
+2.2 Agents and Groups
+
+Agents belong to one of these groups:
+
+Native — originally inside the country, yellow color.
+
+Outside-outsider — initially outside, red color.
+
+Legal immigrant — successfully enter legally, green color.
+
+Illegal immigrant — successfully enter illegally, red color (inside).
+
+Agents outside may attempt immigration (legal or illegal) at configurable intervals; accepted successful immigrants relocate inside and change group.
+
+2.3 Life Cycle: Aging, Birth, Death
+
+Each agent is assigned a random lifespan (1–100 years) at birth, with median around 78 years.
+
+A global “time speed” scale converts real time into simulated years using a slider.
+
+Agents age each “year”; when age ≥ lifespan, they die and are removed.
+
+Each year, agents in each group have a probability (configurable birth rate) to produce a new agent (a “baby”), placed near the parent inside the country.
+
+2.4 Immigration Mechanics
+
+At specified intervals (e.g. yearly):
+
+Legal immigration attempts: Outside agents attempt to cross border; each attempt succeeds with probability = “legal acceptance rate”. If successful → agent moves inside as “legal immigrant.”
+
+Illegal immigration attempts: Outside agents attempt illegal crossing; each attempt succeeds with probability = “illegal success rate”. If successful → agent moves inside as “illegal immigrant.”
+
+Failed attempts keep agents outside. Immigration is modelled as teleport (no pathfinding), for simplicity.
+
+2.5 Implementation & UI
+
+The simulator is implemented with web technologies (Three.js + HTML + CSS + JS), making it widely accessible and easy to run locally or share. A GUI overlay provides controls for time speed, birth rates, immigration rates, and buttons to start/pause/stop the simulation. On stopping, summary statistics (population counts by group, percentages, parameter values) are shown, and the user can export results as a JSON file.
+
+3. Results (Demonstrative / Hypothetical)
+
+(At this stage you need to run experiments to fill this section. What follows are example hypothetical observations.)
+
+Using the simulator under several scenarios:
+
+Scenario A (High legal acceptance, moderate birth rate): Over 100 simulated years, population inside grows steadily; legal immigrants and their descendants gradually make up 20–30% of the population, while natives decline proportionally (but absolute number increases due to births).
+
+Scenario B (Low legal acceptance, high illegal success, high immigrant birth rate): Illegal immigrant share overtakes natives within 70 years; total population grows faster owing to high immigration + births.
+
+Scenario C (Low birth rates, low immigration): Population may stabilize or decline due to aging and death, highlighting significance of both birth and immigration rates in maintaining population size.
+
+Graphs of population size over time, group composition percentages, and age distributions would illustrate these dynamics.
+
+4. Discussion
+4.1 Interpretation
+
+The simulator shows how immigration policy (acceptance rates), combined with fertility and mortality, can dramatically influence long-term population composition. Even small differences in immigration success or birth rates can lead to very different demographic regimes over decades.
+
+This demonstrates the power of agent-based models: from simple rules at individual level, complex population dynamics and emergent macro-level patterns can arise — a characteristic described in ABM literature 
+Wikipedia
++1
+.
+
+4.2 Strengths of the Approach
+
+Flexible parameter tuning — one can test many hypothetical scenarios.
+
+Visual and intuitive representation — useful for teaching, demonstrating demographic concepts.
+
+Exportable data — enables further statistical or retrospective analysis outside the simulator.
+
+Low barrier to entry — runs in browser / local environment; no specialized simulation software needed.
+
+4.3 Limitations & Assumptions
+
+Oversimplified movement and immigration (teleportation, no geography, no resource constraints).
+
+Birth and death are randomly assigned — real-world demographic processes are more complex.
+
+No accounting for social factors: economy, employment, social networks, assimilation, second-generation effects, emigration, or policies besides acceptance/success rates.
+
+No validation against real-world data — this is a hypothetical model, not calibrated to real populations.
+
+4.4 Path to Research-Grade Work
+
+To upgrade this into a research-grade model, one needs to:
+
+Calibrate parameters (birth, death, immigration rates) using real demographic data (census, UN, national statistics).
+
+Add realism: spatial structure, resource constraints, social dynamics, migration cycles, emigration, family structure, age-based fertility, etc.
+
+Run many simulation trials under a matrix of parameter combinations (Monte Carlo / sensitivity analysis).
+
+Collect data: population pyramids, growth curves, immigration impact over time.
+
+Document assumptions, model design, validation, and uncertainty explicitly — following best-practice simulation reporting standards 
+Methods Blog
++1
+.
+
+5. Conclusion
+
+The demography-simulator provides a flexible, visual, and accessible platform for exploring how immigration, birth, and death influence population dynamics. While simple, it captures core dynamics of demographic change and can serve as a basis for deeper, more realistic modeling. With further development — calibration, added social realism, extended agent behaviors — it has the potential to evolve into a tool for serious demographic research or policy exploration.
+
+6. References
+
+Agent-based modeling and simulation (ABMS) — foundational methodology for simulating complex adaptive systems such as populations. 
+SpringerLink
++1
+
+Rossetti & co. “Simulation Methodology” — outlining standard steps for simulation studies including problem definition, model building, validation, experimentation, analysis. 
+rossetti.github.io
++1
+
+On reporting standards for simulation studies: need for transparency, parameter reporting, code sharing, uncertainty analysis. 
+Methods Blog
++1
